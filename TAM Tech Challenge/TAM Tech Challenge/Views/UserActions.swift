@@ -65,6 +65,7 @@ struct UserActions: View {
     
     func loadActiveUsers() async {
         do {
+            oktaUsers = []
             let client = AuthenticatedAPIClient(authManager: authManager, baseURL: OIDCConfig.apiBaseURL)
             let queryItems: [URLQueryItem] = [URLQueryItem(name: "search", value: "status eq \"ACTIVE\" or status eq \"PROVISIONED\"")]
             let usersData = try await client.get("/api/v1/users", queryItems: queryItems)

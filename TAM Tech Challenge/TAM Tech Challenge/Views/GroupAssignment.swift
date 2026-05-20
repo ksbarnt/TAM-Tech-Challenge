@@ -73,6 +73,7 @@ struct GroupAssignment: View {
     
     func loadActiveUsers() async {
         do {
+            oktaUsers = []
             selectedUserID = ""
             selectedGroupID = ""
             let client = AuthenticatedAPIClient(authManager: authManager, baseURL: OIDCConfig.apiBaseURL)
