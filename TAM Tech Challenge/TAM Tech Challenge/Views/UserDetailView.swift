@@ -158,7 +158,3 @@ struct UserDetailView: View {
         }
     }
 }
-
-//#Preview {
-//    UserDetailView()
-//}
