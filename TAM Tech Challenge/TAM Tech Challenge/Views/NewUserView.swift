@@ -21,8 +21,8 @@ struct NewUserView: View {
     @State private var email: String = ""
     @State private var secondEmail: String = ""
     @State private var mobilePhone: String = ""
-    @State private var createFailed: Bool = false
-    @State private var createError: String = ""
+    @State private var apiFailed: Bool = false
+    @State private var apiError: String = ""
     
     var body: some View {
         VStack {
@@ -65,12 +65,15 @@ struct NewUserView: View {
             .buttonStyle(.glassProminent)
         }
         .alert(
-            "There was an error creating the user: \(createError)",
-            isPresented: $createFailed
+            "API Error",
+            isPresented: $apiFailed
         ) {
             Button("OK") {
-                createFailed.toggle()
+                apiFailed = false
+                apiError = ""
             }
+        } message: {
+            Text(apiError)
         }
     }
     
@@ -95,14 +98,12 @@ struct NewUserView: View {
             let client = AuthenticatedAPIClient(authManager: authManager, baseURL: OIDCConfig.apiBaseURL)
             
             let queryItems: [URLQueryItem] = [URLQueryItem(name: "activate", value: "true")]
-            let userUpdate = try await client.post("/api/v1/users", body: createUser, queryItems: queryItems)
-            if !userUpdate.isEmpty {
-                parentID = UUID()
-                dismiss()
-            }
+            let _ = try await client.post("/api/v1/users", body: createUser, queryItems: queryItems)
+            parentID = UUID()
+            dismiss()
         } catch {
-            createError = error.localizedDescription
-            createFailed = true
+            apiError = error.localizedDescription
+            apiFailed = true
         }
     }
 }

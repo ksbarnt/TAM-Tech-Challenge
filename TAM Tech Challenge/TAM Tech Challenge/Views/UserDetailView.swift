@@ -25,8 +25,8 @@ struct UserDetailView: View {
     @State private var secondEmail: String = ""
     @State private var mobilePhone: String = ""
     @State private var userSaved: Bool = false
-    @State private var updateFailed: Bool = false
-    @State private var updateError: String = ""
+    @State private var apiFailed: Bool = false
+    @State private var apiError: String = ""
     @State private var deactivating: Bool = false
     @State private var deactivated: Bool = false
     @State private var isMe: Bool = false
@@ -116,12 +116,15 @@ struct UserDetailView: View {
             }
         }
         .alert(
-            "There was an error updaing the user: \(updateError)",
-            isPresented: $updateFailed
+            "API Error",
+            isPresented: $apiFailed
         ) {
             Button("OK") {
-                updateFailed.toggle()
+                apiFailed = false
+                apiError = ""
             }
+        } message: {
+            Text(apiError)
         }
     }
     
@@ -144,15 +147,14 @@ struct UserDetailView: View {
             let updateUser = UpdateUser(profile: updateProfile)
             
             let client = AuthenticatedAPIClient(authManager: authManager, baseURL: OIDCConfig.apiBaseURL)
-            let userUpdate = try await client.post("/api/v1/users/\(oktaUser.id)", body: updateUser)
-            if !userUpdate.isEmpty {
-                userSaved = true
-                try await Task.sleep(for: .seconds(3))
-                userSaved = false
-            }
+            let _ = try await client.post("/api/v1/users/\(oktaUser.id)", body: updateUser)
+            parentID = UUID()
+            userSaved = true
+            try await Task.sleep(for: .seconds(3))
+            userSaved = false
         } catch {
-            updateError = error.localizedDescription
-            updateFailed = true
+            apiError = error.localizedDescription
+            apiFailed = true
         }
     }
     
@@ -160,10 +162,15 @@ struct UserDetailView: View {
         Task {
             do {
                 let client = AuthenticatedAPIClient(authManager: authManager, baseURL: OIDCConfig.apiBaseURL)
-                let userDeactivate = try await client.delete("/api/v1/users/\(oktaUser.id)")
+                let _ = try await client.delete("/api/v1/users/\(oktaUser.id)")
+                deactivated = true
+                try await Task.sleep(for: .seconds(3))
+                deactivated = false
+                parentID = UUID()
                 dismiss()
             } catch {
-                
+                apiError = error.localizedDescription
+                apiFailed = true
             }
         }
     }
