@@ -78,7 +78,6 @@ struct GroupAssignment: View {
             let client = AuthenticatedAPIClient(authManager: authManager, baseURL: OIDCConfig.apiBaseURL)
             let queryItems: [URLQueryItem] = [URLQueryItem(name: "search", value: "status eq \"ACTIVE\" or status eq \"PROVISIONED\"")]
             let usersData = try await client.get("/api/v1/users", queryItems: queryItems)
-            print(dumpResponse(usersData))
             let users: [OktaUser] = try JSONDecoder.okta.decode([OktaUser].self, from: usersData)
             oktaUsers = users
         } catch {
@@ -92,7 +91,6 @@ struct GroupAssignment: View {
             do {
                 let client = AuthenticatedAPIClient(authManager: authManager, baseURL: OIDCConfig.apiBaseURL)
                 let response = try await client.put("/api/v1/groups/\(selectedGroupID)/users/\(selectedUserID)")
-                print(dumpResponse(response))
                 selectedUserID = ""
                 selectedGroupID = ""
                 assignmentSuccessful = true

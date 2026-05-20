@@ -164,17 +164,3 @@ private struct AnyEncodable: Encodable {
 /// Sentinel for body-less requests (DELETE).
 private struct EmptyBody: Encodable {}
 
-func dumpResponse(_ data: Data) -> String {
-    let result : String
-    if data.isEmpty {
-        result = "(204 No Content)"
-    } else if let json = try? JSONSerialization.jsonObject(with: data),
-              let pretty = try? JSONSerialization.data(withJSONObject: json,
-                                                       options: .prettyPrinted),
-              let str = String(data: pretty, encoding: .utf8) {
-        result = str
-    } else {
-        result = String(data: data, encoding: .utf8) ?? "(binary)"
-    }
-    return result
-}
