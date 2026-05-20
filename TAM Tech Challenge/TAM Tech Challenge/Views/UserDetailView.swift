@@ -28,6 +28,7 @@ struct UserDetailView: View {
     @State private var updateFailed: Bool = false
     @State private var updateError: String = ""
     @State private var deactivating: Bool = false
+    @State private var deactivated: Bool = false
     @State private var isMe: Bool = false
     
     var body: some View {
@@ -85,6 +86,12 @@ struct UserDetailView: View {
             }
             .background(.ultraThinMaterial)
             .zIndex(userSaved ? 2 : -2)
+            VStack {
+                Label("User Deactivated!", systemImage: "checkmark.circle")
+                    .foregroundStyle(.green)
+            }
+            .background(.ultraThinMaterial)
+            .zIndex(deactivated ? 3 : -3)
         }
         .onAppear() {
             login = oktaUser.profile.login
