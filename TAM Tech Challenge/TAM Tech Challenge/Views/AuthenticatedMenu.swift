@@ -46,9 +46,6 @@ struct AuthenticatedMenu: View {
                     NavigationStack {
                         UserActions(authenticatedUser: authenticatedUser)
                             .navigationTitle("User Actions")
-                            .navigationDestination(for: OktaUser.self) { value in
-                                    UserDetailView(oktaUser: value, authenticatedUser: authenticatedUser)
-                            }
                     }
                         .tabItem {
                             Label("User Actions", systemImage: "person.crop.circle.fill")

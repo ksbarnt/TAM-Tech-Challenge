@@ -28,7 +28,7 @@ struct UserActions: View {
                 .zIndex(apiFailed && oktaUsers.isEmpty ? 10 : -10)
             List {
                 ForEach(oktaUsers) { user in
-                    NavigationLink(value: user) {
+                    NavigationLink(destination: UserDetailView(parentID: $viewID, oktaUser: user, authenticatedUser: authenticatedUser)) {
                         VStack(alignment: .leading){
                             Text("\(user.profile.firstName ?? "<no first name>") \(user.profile.lastName ?? "<no last name>")")
                                 .font(.headline)

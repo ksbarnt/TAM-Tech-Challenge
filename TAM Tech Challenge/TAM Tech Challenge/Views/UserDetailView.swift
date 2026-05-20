@@ -13,6 +13,8 @@ struct UserDetailView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    @Binding var parentID: UUID
+    
     @Bindable var oktaUser: OktaUser
     @Bindable var authenticatedUser: OktaUser
     
@@ -92,6 +94,7 @@ struct UserDetailView: View {
             secondEmail = oktaUser.profile.secondEmail ?? ""
             mobilePhone = oktaUser.profile.mobilePhone ?? ""
             isMe = oktaUser.id == authenticatedUser.id
+            parentID = UUID()
         }
         .toolbar {
             Button(role: .destructive, action: { deactivating = true }) {
