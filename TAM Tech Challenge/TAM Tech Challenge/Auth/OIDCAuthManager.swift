@@ -76,7 +76,7 @@ final class OIDCAuthManager: NSObject, ObservableObject {
     func refreshAccessToken() async throws {
         guard let refreshToken = store.refreshToken else { throw AuthError.noRefreshToken }
 
-        var components = URLComponents(string: tokenEndpoint)!
+        let components = URLComponents(string: tokenEndpoint)!
         var request    = URLRequest(url: components.url!)
         request.httpMethod = "POST"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
